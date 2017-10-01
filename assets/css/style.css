@@ -1,0 +1,43 @@
+html,
+body {
+    height: 100%;
+    background-color: gray;
+}
+
+.computer {
+    margin-top: 5px;
+    height: 96vh;
+}
+
+.outer {
+    position: relative;
+}
+
+.close-x {
+    cursor: pointer;
+}
+
+.inner {
+    position: relative;
+    bottom: 35vh;
+}
+
+.missile {
+    transform: rotate(80deg);
+    font-size: 40px;
+    position: absolute;
+    z-index: 1000;
+}
+
+.my-center {
+    margin: 0 auto;
+    width: 100%;
+}
+
+.display-none {
+    display: none;
+}
+
+span {
+    margin-left: 8px;
+}

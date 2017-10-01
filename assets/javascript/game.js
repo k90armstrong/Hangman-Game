@@ -1,27 +1,35 @@
 function myMap() {
-    getLocation();
+    var coords = getLocation();
+
+}
+
+function getLocation() {
+    var latitude = 40.9628845;
+    var longitude = -112.0953297;
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(changeLatLong);
+    } else {
+        var mapProp = {
+            center: new google.maps.LatLng(latitude, longitude), // get current location from browser, if can't default to washingtn dc
+            zoom: 10,
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        map.setOptions({
+            draggable: false
+        });
+
+    }
+}
+
+function changeLatLong(position) {
     var mapProp = {
-        center: new google.maps.LatLng(latitude, longitude), // get current location from browser, if can't default to washingtn dc
+        center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude), // get current location from browser, if can't default to washingtn dc
         zoom: 10,
     };
     var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
     map.setOptions({
         draggable: false
     });
-}
-
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(changeLatLong);
-    } else {
-        latitude = 40.9628845;
-        longitude = -112.0953297;
-    }
-}
-
-function changeLatLong(position) {
-    latitude = position.coords.latitude;
-    longitude = position.coords.longitude;
 }
 
 function mainGame(event) {
@@ -36,8 +44,8 @@ function mainGame(event) {
     game.updateBottomStats();
 }
 
-var latitude = 40.9628845;
-var longitude = -112.0953297;
+var latitude;
+var longitude;
 var usernames = ['kim', 'denisrodman'];
 var passwords = ['mouserat', 'appletree'];
 var game = {

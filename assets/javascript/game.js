@@ -36,6 +36,9 @@ function mainGame(event) {
     var keyPressed = event.key;
     if (game.inString(keyPressed)) {
         console.log('you guessed right');
+        game.succesfulAttempt(keyPressed);
+        var newString = game.getNewStrng();
+        game.updateString(newString);
     } else {
         console.log('you guessed wrong');
         game.failedAttempt(keyPressed);
@@ -52,6 +55,7 @@ var game = {
     username: null,
     password: null,
     guesses: [],
+    correctGuesses: [],
     remainingTries: 15,
     currentStep: 'username',
 
@@ -61,6 +65,7 @@ var game = {
         this.guesses = [];
         this.remainingTries = 15;
         this.currentStep = 'username';
+        this.correctGuesses = [];
     },
     inString: function (guess) {
         if (this.currentStep === 'username') {
@@ -85,6 +90,14 @@ var game = {
         this.guesses.push(guess.toUpperCase());
         this.remainingTries -= 1;
     },
+    succesfulAttempt: function (guess) {
+        for (var i = 0; i < this.correctGuesses.length; i++) {
+            if (guess === this.correctGuesses[i].toLowerCase()) {
+                return
+            }
+        }
+        this.correctGuesses.push(guess);
+    },
     getLength: function () {
         if (this.currentStep === 'username') {
             return this.username.length;
@@ -94,6 +107,33 @@ var game = {
     updateBottomStats: function () {
         document.getElementById('attempts').innerText = this.remainingTries;
         document.getElementById('guesses').innerHTML = this.guesses.join(' ');
+    },
+    getNewStrng: function () {
+        if (this.currentStep === 'username') {
+            var strng = this.username
+        } else {
+            var strng = this.password
+        }
+        var outputStrng = strng.split('');
+        for (var i = 0; i < strng.length; i++) {
+            var remove = true;
+            for (var j = 0; j < this.correctGuesses.length; j++) {
+                if (strng[i] === this.correctGuesses[j]) {
+                    remove = false;
+                }
+            }
+            if (remove) {
+                outputStrng[i] = '_';
+            }
+        }
+        return outputStrng.join(' ')
+    },
+    updateString: function (strng) {
+        if (this.currentStep === 'username') {
+            document.getElementById('username').innerHTML = strng;
+        } else {
+            document.getElementById('password').innerHTML = strng;
+        }
     },
     checkStatus: function () {
         if (this.remainingTries <= 0) {

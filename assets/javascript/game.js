@@ -15,7 +15,14 @@ function getLocation() {
         };
         var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
         map.setOptions({
-            draggable: false
+            draggable: false,
+            mapTypeControl: false,
+            draggable: false,
+            scaleControl: false,
+            scrollwheel: false,
+            navigationControl: false,
+            streetViewControl: false,
+
         });
 
     }
@@ -31,6 +38,34 @@ function changeLatLong(position) {
         draggable: false
     });
 }
+
+function startMissile(totalTime, finalX, finalY) {
+    var rect = missile.getBoundingClientRect();
+    // missile.className = missile.className + ' missile-end';
+    // missile.style.position = "relative";
+    var startX = rect.top;
+    var startY = rect.right;
+    console.log('startx: ' + startX);
+    console.log('starty: ' + startY);
+
+    var deltaX = finalX - startX;
+    var deltaY = finalY - startY;
+    var totalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    console.log(totalDistance);
+    var fps = 10;
+    var changePerMoveX = deltaX / (totalTime * fps)
+    var changePerMoveY = deltaY / (totalTime * fps)
+
+    var moveMisselIntreval = setInterval(function () {
+        console.log('Moving missile');
+        console.log(missile.style.top);
+        missile.style.top = Math.ceil(parseInt(missile.style.top.replace('px', '')) + changePerMoveY) + 'px';
+        missile.style.left = Math.ceil(parseInt(missile.style.left.replace('px', '')) + changePerMoveX) + 'px';
+        console.log(missile.style.top);
+    }, 1000);
+
+}
+
 
 function mainGame(event) {
     var keyPressed = event.key;
@@ -49,6 +84,7 @@ function mainGame(event) {
 
 var latitude;
 var longitude;
+var missile = document.getElementById('missile');
 var usernames = ['kim', 'denisrodman'];
 var passwords = ['mouserat', 'appletree'];
 var game = {
@@ -68,11 +104,7 @@ var game = {
         this.correctGuesses = [];
     },
     inString: function (guess) {
-        if (this.currentStep === 'username') {
-            var string = this.username;
-        } else {
-            var string = this.password;
-        }
+        var string = this.getCurrentWordBeingGuessed();
         // check to see if the guess is in the string
         for (var i = 0; i < string.length; i++) {
             if (guess === string[i]) {
@@ -99,21 +131,14 @@ var game = {
         this.correctGuesses.push(guess);
     },
     getLength: function () {
-        if (this.currentStep === 'username') {
-            return this.username.length;
-        }
-        return this.password.length;
+        return this.getCurrentWordBeingGuessed().length;
     },
     updateBottomStats: function () {
         document.getElementById('attempts').innerText = this.remainingTries;
         document.getElementById('guesses').innerHTML = this.guesses.join(' ');
     },
     getNewStrng: function () {
-        if (this.currentStep === 'username') {
-            var strng = this.username
-        } else {
-            var strng = this.password
-        }
+        var strng = this.getCurrentWordBeingGuessed();
         var outputStrng = strng.split('');
         for (var i = 0; i < strng.length; i++) {
             var remove = true;
@@ -139,7 +164,36 @@ var game = {
         if (this.remainingTries <= 0) {
             console.log('game over');
         }
+        var currentWord = this.getCurrentWordBeingGuessed();
+        if (this.allGuessed()) {
+            console.log('all the way guessed');
+            if (this.currentStep === 'username') {
+                this.currentStep = 'password';
+                this.correctGuesses = [];
+                document.getElementById('entire-password').className = "";
+                this.updateString(this.getNewStrng());
+            } else {
+                document.getElementById('main-button').style.visibility = 'visible';
+                document.getElementById('main-button').innerHTML = "Abort!";
+            }
+        }
         // or check if time ran out
+    },
+    allGuessed: function () {
+        var currentWord = this.getCurrentWordBeingGuessed();
+        for (var i = 0; i < currentWord.length; i++) {
+            if (this.correctGuesses.indexOf(currentWord[i]) === -1) {
+                return false
+            }
+        }
+        return true
+    },
+    getCurrentWordBeingGuessed: function () {
+        if (this.currentStep === 'username') {
+            return this.username
+        } else {
+            return this.password
+        }
     }
 }
 
@@ -153,6 +207,7 @@ document.getElementById('main-button').addEventListener('click', function (event
         document.getElementById('login').className = "my-center";
         document.getElementById('main-button').style.visibility = 'hidden';
         game.startGame();
+        startMissile(3000, 500, 600);
         game.updateBottomStats();
         document.getElementById('username').innerText = '_ '.repeat(game.getLength());
         document.addEventListener('keyup', mainGame);

@@ -27,6 +27,16 @@ body {
     font-size: 40px;
     position: absolute;
     z-index: 1000;
+    transition: all 10000s;
+}
+
+.missile-end {
+    transform: rotate(80deg);
+    font-size: 40px;
+    position: absolute;
+    top: 400px;
+    left: 400px;
+    transition: all 10000s;
 }
 
 .my-center {

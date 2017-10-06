@@ -4,9 +4,21 @@ body {
     background-color: gray;
 }
 
+.container {
+    max-height: 100vh !important;
+}
+
 .computer {
     margin-top: 5px;
-    height: 96vh;
+    /* height: 96vh; */
+}
+
+.lose-gif {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    border: 2px solid gray;
 }
 
 .outer {
@@ -19,7 +31,8 @@ body {
 
 .inner {
     position: relative;
-    bottom: 35vh;
+    /* bottom: 35vh; */
+    top: -40vh;
 }
 
 .missile {
@@ -27,16 +40,9 @@ body {
     font-size: 40px;
     position: absolute;
     z-index: 1000;
-    transition: all 10000s;
-}
-
-.missile-end {
-    transform: rotate(80deg);
-    font-size: 40px;
-    position: absolute;
-    top: 400px;
-    left: 400px;
-    transition: all 10000s;
+    /* transition: all 100s; */
+    top: 0px;
+    left: 0px;
 }
 
 .my-center {
@@ -50,4 +56,8 @@ body {
 
 span {
     margin-left: 8px;
+}
+
+div.panel-body.outer {
+    padding: 0;
 }

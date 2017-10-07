@@ -10,7 +10,7 @@ body {
 
 .computer {
     margin-top: 5px;
-    /* height: 96vh; */
+    height: 98vh;
 }
 
 .lose-gif {
@@ -32,7 +32,7 @@ body {
 .inner {
     position: relative;
     /* bottom: 35vh; */
-    top: -40vh;
+    /* top: -40vh; */
 }
 
 .missile {
@@ -43,6 +43,17 @@ body {
     /* transition: all 100s; */
     top: 0px;
     left: 0px;
+}
+
+.target {
+    transform: rotate(80deg);
+    font-size: 40px;
+    position: absolute;
+    z-index: 1000;
+    /* transition: all 100s; */
+    top: 0px;
+    left: 0px;
+    color: #F1443B;
 }
 
 .my-center {

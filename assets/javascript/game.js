@@ -11,7 +11,6 @@ function myMap() {
 
         overlay = new google.maps.OverlayView();
         overlay.draw = function () {};
-        console.log('i amcreating the overlay', overlay);
         overlay.setMap(map);
     });
 }
@@ -24,15 +23,15 @@ function getUserLocation() {
                 lng: position.coords.longitude
             };
             changeLocation(latLng);
+        }, (error) => {
+            // if user doesnt allow for the location info just start with the first index in the location array
+            var loc = locations[game.locationIndex];
+            var latLng = loc.latLng;
+            game.locationIndex += 1;
+            game.username = loc.user;
+            game.password = loc.password;
+            changeLocation(latLng);
         });
-    } else {
-        // if user doesnt allow for the location info just start with the first index in the location array
-        var loc = locations[game.locationIndex];
-        var latLng = loc.latLng;
-        game.locationIndex += 1;
-        game.username = loc.user;
-        game.password = loc.password;
-        changeLocation(latLng);
     }
 }
 
@@ -43,7 +42,6 @@ function changeLocation(latLng) {
     })
     var glatLang = new google.maps.LatLng(latLng.lat, latLng.lng);
     targetLocation = overlay.getProjection().fromLatLngToContainerPixel(glatLang);
-    // console.log(test);
     target.className = "fa fa-bullseye target";
     target.style.top = targetLocation.y + 'px';
     target.style.left = targetLocation.x + 'px';
@@ -125,7 +123,6 @@ var map;
 var overlay;
 var targetLocation;
 var computerElement = document.getElementById('computer');
-console.log('here is the bottom' + getBottom(computerElement));
 var bottom = getBottom(computerElement);
 var inner = document.getElementById('inner');
 // inner.style.top = bottom + 'px';
@@ -136,10 +133,11 @@ var passwordSpan = document.getElementById('password');
 var messageP = document.getElementById('intro');
 var mainButton = document.getElementById('main-button');
 var loginDiv = document.getElementById('login');
+// If you are looking at this you are a cheater/hacker!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 var locations = [{
         name: 'the White House',
-        user: 'mickeymouse',
-        password: 'waltdisney',
+        user: 'donaldtrump',
+        password: 'melaniatrump',
         latLng: {
             lat: 38.897957,
             lng: -77.036560
@@ -147,8 +145,8 @@ var locations = [{
     },
     {
         name: 'the Statue of Liberty',
-        user: 'mickeymouse',
-        password: 'waltdisney',
+        user: 'ladyliberty',
+        password: 'letfreedomring',
         latLng: {
             lat: 40.689247,
             lng: -74.044502
@@ -156,8 +154,8 @@ var locations = [{
     },
     {
         name: 'the Pentagon',
-        user: 'mickeymouse',
-        password: 'waltdisney',
+        user: 'arlington',
+        password: 'virginia',
         latLng: {
             lat: 38.8719,
             lng: -77.0563
@@ -165,8 +163,8 @@ var locations = [{
     },
     {
         name: 'the Empire State Building',
-        user: 'mickeymouse',
-        password: 'waltdisney',
+        user: 'newyorknewyork',
+        password: 'thebigapple',
         latLng: {
             lat: 40.748817,
             lng: -73.985428
@@ -181,8 +179,8 @@ var locations = [{
         }
     }, {
         name: 'Mount Rushmore',
-        user: 'mickeymouse',
-        password: 'waltdisney',
+        user: 'georgewashington',
+        password: 'abrahamlincoln',
         latLng: {
             lat: 43.8791,
             lng: -103.4591
@@ -204,7 +202,6 @@ var missile = {
         var deltaX = finalX - startX;
         var deltaY = finalY - startY;
         var angle = (Math.atan(deltaY / deltaX));
-        console.log('ang', angle);
         angle += 0.785398; // 45 degrees to radians 0.785398
         missileElement.style.transform = 'rotate(' + angle + 'rad)';
         missileElement.className = 'fa fa-rocket missile';

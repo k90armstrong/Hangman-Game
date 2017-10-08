@@ -6,15 +6,13 @@ function myMap() {
     };
     map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
     var latLng = getUserLocation();
-    var overlay = new google.maps.OverlayView();
-    overlay.draw = function () {};
-    overlay.setMap(map);
-    // targetPX = overlay.getProjection().fromLatLngToCntainerPixel(latLng);
-    // console.log(targetPX);
-    marker = new google.maps.Marker({
-        position: latLng,
-        map: map,
-        title: 'Target'
+
+    google.maps.event.addListener(map, 'projection_changed', function () {
+
+        overlay = new google.maps.OverlayView();
+        overlay.draw = function () {};
+        console.log('i amcreating the overlay', overlay);
+        overlay.setMap(map);
     });
 }
 
@@ -41,16 +39,14 @@ function changeLocation(latLng) {
         lat: latLng.lat - .1,
         lng: latLng.lng
     })
-    marker.setPosition(latLng);
     var glatLang = new google.maps.LatLng(latLng.lat, latLng.lng);
-    var test = map.getProjection().fromLatLngToPoint(glatLang);
-    console.log(test);
+    targetLocation = overlay.getProjection().fromLatLngToContainerPixel(glatLang);
+    // console.log(test);
     target.className = "fa fa-bullseye target";
-    target.style.bottom = test.y + 'px';
-    target.style.left = test.x + 'px';
-
-
+    target.style.top = targetLocation.y + 'px';
+    target.style.left = targetLocation.x + 'px';
 }
+
 
 // MAIN GAME HERE CALLBACK FOR KEYUP EVENT
 function mainGame(event) {
@@ -123,12 +119,13 @@ var latitude;
 var longitude;
 var targetPX;
 var map;
-var marker;
+var overlay;
+var targetLocation;
 var computerElement = document.getElementById('computer');
 console.log('here is the bottom' + getBottom(computerElement));
 var bottom = getBottom(computerElement);
 var inner = document.getElementById('inner');
-inner.style.top = bottom + 'px';
+// inner.style.top = bottom + 'px';
 var gif = document.getElementById('gif');
 var target = document.getElementById('target');
 var usernameSpan = document.getElementById('username');
@@ -188,34 +185,35 @@ var missile = {
     moveMissileIntreval: null,
 
     startMissile: function (totalTime, finalX, finalY) {
-        var rect = missileElement.getBoundingClientRect();
-        // missile.className = missile.className + ' missile-end';
-        // missile.style.position = "relative";
-        var startX = rect.top;
-        var startY = rect.right;
+        startX = 0;
+        startY = 0;
 
         var deltaX = finalX - startX;
         var deltaY = finalY - startY;
+        var angle = (Math.atan(deltaY / deltaX));
+        console.log('ang', angle);
+        angle += 0.785398; // 45 degrees to radians 0.785398
+        missileElement.style.transform = 'rotate(' + angle + 'rad)'
         var totalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         var fps = 10;
         var changePerMoveX = deltaX / (totalTime * fps);
-        var changePerMoveY = deltaY / (totalTime * fps);
+        var changePerMoveY = (deltaY / (totalTime * fps));
 
 
         this.moveMissileIntreval = setInterval(function () {
             var oldTop = missileElement.style.top.replace('px', '');
             var oldLeft = missileElement.style.left.replace('px', '');
             if (oldTop === '') {
-                oldTop = '0';
+                oldTop = startX;
             }
             if (oldLeft === '') {
-                oldLeft = '0';
+                oldLeft = startY;
             }
             var newTop = parseFloat(oldTop) + changePerMoveY;
             var newLeft = parseFloat(oldLeft) + changePerMoveX;
             missileElement.style.top = newTop + 'px';
             missileElement.style.left = newLeft + 'px';
-        }, 100);
+        }, 10);
 
     },
     resetMissile: function () {
@@ -362,7 +360,7 @@ mainButton.addEventListener('click', function (event) {
         loginDiv.className = "my-center"; // making this visible
         mainButton.style.visibility = 'hidden';
         game.startGame();
-        missile.startMissile(5000, 8000, 9000);
+        missile.startMissile(50, targetLocation.x, targetLocation.y);
         game.updateBottomStats();
         usernameSpan.innerText = '_ '.repeat(game.getLength());
         document.addEventListener('keyup', mainGame);

@@ -32,21 +32,22 @@ body {
 .inner {
     position: relative;
     /* bottom: 35vh; */
-    /* top: -40vh; */
+    top: -40vh;
+    z-index: 1000;
 }
 
 .missile {
-    transform: rotate(80deg);
+    /* transform: rotate(80deg); */
     font-size: 40px;
     position: absolute;
-    z-index: 1000;
+    z-index: 500;
     /* transition: all 100s; */
     top: 0px;
     left: 0px;
+    color: #2C2004;
 }
 
 .target {
-    transform: rotate(80deg);
     font-size: 40px;
     position: absolute;
     z-index: 1000;

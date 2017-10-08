@@ -45,6 +45,7 @@ function changeLocation(latLng) {
     target.className = "fa fa-bullseye target";
     target.style.top = targetLocation.y + 'px';
     target.style.left = targetLocation.x + 'px';
+    missile.changeAngle(targetLocation.x, targetLocation.y);
 }
 
 
@@ -184,7 +185,7 @@ var missileElement = document.getElementById('missile');
 var missile = {
     moveMissileIntreval: null,
 
-    startMissile: function (totalTime, finalX, finalY) {
+    changeAngle: function (finalX, finalY) {
         startX = 0;
         startY = 0;
 
@@ -193,12 +194,21 @@ var missile = {
         var angle = (Math.atan(deltaY / deltaX));
         console.log('ang', angle);
         angle += 0.785398; // 45 degrees to radians 0.785398
-        missileElement.style.transform = 'rotate(' + angle + 'rad)'
+        missileElement.style.transform = 'rotate(' + angle + 'rad)';
+        missileElement.className = 'fa fa-rocket missile';
+    },
+
+    startMissile: function (totalTime, finalX, finalY) {
+        startX = 0;
+        startY = 0;
+
+        var deltaX = finalX - startX;
+        var deltaY = finalY - startY;
         var totalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         var fps = 10;
         var changePerMoveX = deltaX / (totalTime * fps);
         var changePerMoveY = (deltaY / (totalTime * fps));
-
+        var thisMissile = this;
 
         this.moveMissileIntreval = setInterval(function () {
             var oldTop = missileElement.style.top.replace('px', '');
@@ -213,6 +223,11 @@ var missile = {
             var newLeft = parseFloat(oldLeft) + changePerMoveX;
             missileElement.style.top = newTop + 'px';
             missileElement.style.left = newLeft + 'px';
+            if (newTop >= finalY && newLeft >= finalX) {
+                // game over !!!!
+                clearInterval(thisMissile.moveMissileIntreval);
+                game.checkStatus(true);
+            }
         }, 10);
 
     },
@@ -300,13 +315,13 @@ var game = {
             passwordSpan.innerHTML = strng;
         }
     },
-    checkStatus: function () {
-        if (this.remainingTries <= 0) {
+    checkStatus: function (missileHit) {
+        if (this.remainingTries <= 0 | missileHit) {
             // check if missile hit target TODO
             changeScreenToLose();
             missile.resetMissile();
             game.changeLocation();
-            setTimeout(startNewGame, 3000);
+            setTimeout(startNewGame, 6000);
             return
         }
         var currentWord = this.getCurrentWordBeingGuessed();
@@ -360,10 +375,11 @@ mainButton.addEventListener('click', function (event) {
         loginDiv.className = "my-center"; // making this visible
         mainButton.style.visibility = 'hidden';
         game.startGame();
-        missile.startMissile(50, targetLocation.x, targetLocation.y);
+        missile.startMissile(500, targetLocation.x, targetLocation.y);
         game.updateBottomStats();
         usernameSpan.innerText = '_ '.repeat(game.getLength());
         document.addEventListener('keyup', mainGame);
+        gif.className = "lose-gif display-none";
     } else if (this.innerText === 'Abort!') {
         // user won
         // show user win screen and then play again after 3 seconds...

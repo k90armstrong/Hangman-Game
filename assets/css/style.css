@@ -32,7 +32,7 @@ body {
 .inner {
     position: relative;
     /* bottom: 35vh; */
-    top: -40vh;
+    top: -45vh;
     z-index: 1000;
 }
 

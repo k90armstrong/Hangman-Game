@@ -30,6 +30,8 @@ function getUserLocation() {
         var loc = locations[game.locationIndex];
         var latLng = loc.latLng;
         game.locationIndex += 1;
+        game.username = loc.user;
+        game.password = loc.password;
         changeLocation(latLng);
     }
 }
@@ -134,10 +136,10 @@ var passwordSpan = document.getElementById('password');
 var messageP = document.getElementById('intro');
 var mainButton = document.getElementById('main-button');
 var loginDiv = document.getElementById('login');
-var usernames = ['kim', 'dennisrodman'];
-var passwords = ['mouserat', 'appletree'];
 var locations = [{
         name: 'the White House',
+        user: 'mickeymouse',
+        password: 'waltdisney',
         latLng: {
             lat: 38.897957,
             lng: -77.036560
@@ -145,6 +147,8 @@ var locations = [{
     },
     {
         name: 'the Statue of Liberty',
+        user: 'mickeymouse',
+        password: 'waltdisney',
         latLng: {
             lat: 40.689247,
             lng: -74.044502
@@ -152,6 +156,8 @@ var locations = [{
     },
     {
         name: 'the Pentagon',
+        user: 'mickeymouse',
+        password: 'waltdisney',
         latLng: {
             lat: 38.8719,
             lng: -77.0563
@@ -159,18 +165,24 @@ var locations = [{
     },
     {
         name: 'the Empire State Building',
+        user: 'mickeymouse',
+        password: 'waltdisney',
         latLng: {
             lat: 40.748817,
             lng: -73.985428
         }
     }, {
         name: 'Disneyland',
+        user: 'mickeymouse',
+        password: 'waltdisney',
         latLng: {
             lat: 33.8121,
             lng: -117.9190
         }
     }, {
         name: 'Mount Rushmore',
+        user: 'mickeymouse',
+        password: 'waltdisney',
         latLng: {
             lat: 43.8791,
             lng: -103.4591
@@ -241,8 +253,8 @@ var missile = {
 
 // game object
 var game = {
-    username: null,
-    password: null,
+    username: 'kim',
+    password: 'northkorearules',
     guesses: [],
     correctGuesses: [],
     remainingTries: 15,
@@ -251,8 +263,6 @@ var game = {
     locationIndex: 0,
 
     startGame: function () {
-        this.password = passwords[Math.floor(Math.random() * passwords.length)];
-        this.username = usernames[Math.floor(Math.random() * usernames.length)];
         this.guesses = [];
         this.remainingTries = 15;
         this.currentStep = 'username';
@@ -358,6 +368,8 @@ var game = {
     },
     changeLocation: function () {
         this.location = locations[this.locationIndex];
+        this.username = this.location.user;
+        this.password = this.location.password;
         this.locationIndex += 1;
         if (this.locationIndex === locations.length) {
             this.locationIndex = 0;

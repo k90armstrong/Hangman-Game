@@ -1,5 +1,6 @@
 // MAP FUCNTION HERE
 function myMap() {
+    // this runs one time once the page loads
     var mapProp = {
         zoom: 10,
         disableDefaultUI: true
@@ -16,6 +17,7 @@ function myMap() {
 }
 
 function getUserLocation() {
+    // try to get user location
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
             var latLng = {
@@ -36,6 +38,7 @@ function getUserLocation() {
 }
 
 function changeLocation(latLng) {
+    // function to change the center of the map for each game
     map.setCenter({
         lat: latLng.lat - .1,
         lng: latLng.lng
@@ -376,7 +379,7 @@ var game = {
     }
 }
 
-// addind click event listener for the main button
+// adding click event listener for the main button
 mainButton.addEventListener('click', function (event) {
     if (this.innerText === 'Start!') {
         this.innerText = 'Abort!';
